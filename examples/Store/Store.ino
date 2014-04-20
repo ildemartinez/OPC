@@ -1,9 +1,10 @@
 #include <OPC.h>
+#include <Bridge.h>
 
 /*
  * Declaring the OPC object
  */
-OPC aOPC;
+OPCSerial aOPC;
 
 /*
  * create a callback function for the OPCItem
