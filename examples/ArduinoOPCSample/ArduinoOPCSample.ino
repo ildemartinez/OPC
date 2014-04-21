@@ -13,8 +13,7 @@
  * 1 .- Include OPC Libraries
  */
 #include <OPC.h>
-#include <SPI.h>
-#include <Ethernet.h>
+#include <Bridge.h>
 
 /*
  * 2.- Declaring the OPC object
