@@ -1,26 +1,25 @@
-ArduinoOPCServer
-================
+OPC Library for Arduino
+=======================
 
-Arduino OPC Server is a library that is used by the OPC Server for Arduino for sharing information but can be used alone.
+OPC Library is an Arduino library that is used by the OPC Server for Arduino for sharing information but can be used alone.
 
-It provide to you with a easy way to interchange information between Arduino and Serial or Ethernet ports in a unified way.
+It provide to you with a easy way to interchange information between Arduino and Serial or Ethernet ports (Wifi or Wired) in a unified way.
 
 How to use it
 -------------
 
 First of all you have to have in mind what do you want provide to the external world using Serial, Ethernet or even Wifi.
 
-At this moment you can publish your items using serial or http ways. To do this you have some objects that you can use.
+At this moment you can publish your items using serial or http ways (wifi and wired). To do this you have some objects that you can use.
 
 Declare 
 ```
 OPCSerial aOPC; 
 ```
-for serial use or
+for serial use or for http use:
 ```
 OPCNet aOPC;
 ```
-for http use
 
 Declare your items
 ------------------
