@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Opc by SoftwareTools4Makers</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/SoftwareTools4Makers/OPC">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/SoftwareTools4Makers/OPC/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/SoftwareTools4Makers/OPC/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Opc</h1>
+          <p>OPC Library for Arduino</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/SoftwareTools4Makers">SoftwareTools4Makers</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="arduinoopcserver" class="anchor" href="#arduinoopcserver"><span class="octicon octicon-link"></span></a>ArduinoOPCServer</h1>
+
+<p>Arduino OPC Server is a library that is used by the OPC Server for Arduino for sharing information but can be used alone.</p>
+
+<p>It provide to you with a easy way to interchange information between Arduino and Serial or Ethernet ports in a unified way.</p>
+
+<h2>
+<a name="how-to-use-it" class="anchor" href="#how-to-use-it"><span class="octicon octicon-link"></span></a>How to use it</h2>
+
+<p>First of all you have to have in mind what do you want provide to the external world using Serial, Ethernet or even Wifi.</p>
+
+<p>At this moment you can publish your items using serial or http ways. To do this you have some objects that you can use.</p>
+
+<p>Declare </p>
+
+<pre><code>OPCSerial aOPC; 
+</code></pre>
+
+<p>for serial use or</p>
+
+<pre><code>OPCNet aOPC;
+</code></pre>
+
+<p>for http use</p>
+
+<h2>
+<a name="declare-your-items" class="anchor" href="#declare-your-items"><span class="octicon octicon-link"></span></a>Declare your items</h2>
+
+<p>An item can be a real or virtual input/output pin of your Arduino. For example, you would want to publish your analog input A0 to the external world or a virtual value based in some operations made with your Arduino using real pins or calculations.</p>
+
+<p>You can declare your item this way:</p>
+
+<pre><code>aOPC.addItem("random",opc_read, opc_int, callback);
+</code></pre>
+
+<p>where the first param declares your item name
+second one tell to the library if is read, read/write or write only item (valid values are opc_read, opc_write, opc_readwrite)
+third is the type of the item you are declaring (opc_bool, opc_byte, opc_int, opc_float)
+last is the callback function. The callback will be executed when external client want to read/write a item so you can return or store the desired value.</p>
+
+<p>Here you can see a complete example</p>
+
+<pre><code>#include &lt;OPC.h&gt;
+
+/*
+ * Declaring the OPC object
+ */
+OPCSerial aOPCSerial;
+
+/*
+ * We want to publish analogPin 3 to OPC Client
+ */
+int analogPin = 3;
+
+/*
+ * create a callback function for the OPCItem
+ */
+int callback(const char *itemID, const opcOperation opcOP, const int value){
+  return analogRead(analogPin);
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  /*
+   * OPC Object initialization
+   */
+  aOPCSerial.setup();
+
+  /*
+   * A0 OPCItem declaration
+   */
+  aOPCSerial.addItem("A0",opc_read, opc_int, callback);
+}
+
+void loop() {
+  /*
+   * OPC process commands
+   */
+  aOPCSerial.processOPCCommands();
+}
+</code></pre>
+
+<p>You can upload this code and open a terminal. If you send intro to your Arduino it will return all items declared, if you send the name of declared item you will get the value returned by the callback function.</p>
+
+<p>Here you could find more information and a videotutorial about this topic <a href="http://www.st4makers.com/arduino-opc-server/installation-guides/easy-testing-of-your-opc-sketch">http://www.st4makers.com/arduino-opc-server/installation-guides/easy-testing-of-your-opc-sketch</a></p>
+
+<p>At this moment you can visit the project page at <a href="http://www.st4makers.com">http://www.st4makers.com</a> and download it.</p>
+
+<p>Here you can find the libraries and samples sketchs to start learning and get fun.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
