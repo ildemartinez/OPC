@@ -47,7 +47,7 @@ void setup() {
   /*
    * led OPCItem declaration
    */
-  aOPC.addItem("led",opc_read, opc_bool, callback);
+  aOPC.addItem("led",opc_readwrite, opc_bool, callback);
 }
 
 void loop() {
