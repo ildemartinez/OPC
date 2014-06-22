@@ -223,6 +223,10 @@ void OPCNet::processOPCCommands() {
       }   
       else
       { 
+       p = strtok_r(buffer,"=",&j);
+       if (!j[0])  {
+        
+
         for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
             // Execute the stored handler function for the command  
@@ -252,13 +256,12 @@ void OPCNet::processOPCCommands() {
 
             matched = true;
             break;
-          }
-        } 
-      } 
-    }
-    else
-    {
-      for (int i = 0; i < OPCItemsCount; i++) {   
+          } /* end if */
+        } /* end for */
+       } /* end if */
+       else
+       {
+        for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
 
             // Call the stored handler function for the command                          
@@ -284,8 +287,10 @@ void OPCNet::processOPCCommands() {
             break;
           }
         } 
-    }  
-  }               
+    }
+       }
+      } /* end else */
+    } /* end if */
                
     // Close connection and free resources.
   client.stop();
