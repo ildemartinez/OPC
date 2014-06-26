@@ -2,14 +2,15 @@
  * A generic sketch for use with the Arduino OPC DA Serial Server
  */
 #include <OPC.h>
+#include <Bridge.h>
 
 OPCSerial aOPCSerial;
 
 bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool value){
   byte port;
   
-  if (!strncmp(itemID, "D2",MAXOPCITEMNAME)) port = 2;
-  if (!strncmp(itemID, "D13",MAXOPCITEMNAME)) port = 13;  
+  if (!strcmp(itemID, "D2")) port = 2;
+  if (!strcmp(itemID, "D13")) port = 13;  
   
   if (opcOP == opc_opwrite) {
       pinMode(port,OUTPUT);
@@ -36,5 +37,4 @@ void setup() {
 void loop() {
   aOPCSerial.processOPCCommands();
 }
-
 
