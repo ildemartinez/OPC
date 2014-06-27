@@ -1,4 +1,5 @@
 #include <OPC.h>
+#include <Bridge.h>
 
 /*
  * Declaring the OPC object
