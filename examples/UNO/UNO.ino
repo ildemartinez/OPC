@@ -1,40 +1,99 @@
 /*
- * A generic sketch for use with the Arduino OPC DA Serial Server
+ * A generic sketch for use with the Arduino OPC or Visual OPC Builder from www.st4makers.com
  */
 #include <OPC.h>
 #include <Bridge.h>
 
-OPCSerial aOPCSerial;
+OPCSerial myArduinoUno;
 
-bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool value){
+opcOperation digital_status_input[14], analog_status_input[6];
+
+bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool value)
+{
   byte port;
   
-  if (!strcmp(itemID, "D2")) port = 2;
-  if (!strcmp(itemID, "D13")) port = 13;  
-  
+  port = atoi(&itemID[1]);
+
   if (opcOP == opc_opwrite) {
-      pinMode(port,OUTPUT);
-      Serial.println("write");
-      digitalWrite(port,value);  
+    if (digital_status_input[port]  = opc_opread) {
+      digital_status_input[port] = opc_opwrite;
+      pinMode(port,OUTPUT);   
     }
+      
+    digitalWrite(port,value);  
+  }
   else
   {
-    pinMode(port,INPUT);   
- Serial.println("read");   
+    if (digital_status_input[port]  = opc_opwrite) {
+      digital_status_input[port] = opc_opread;
+      pinMode(port,INPUT);   
+    } 
+
     return digitalRead(port); 
   }  
 
 }
 
+float readwrite_analog(const char *itemID, const opcOperation opcOP, const float value) {
+  byte port;
+  
+  port = atoi(&itemID[1]);
+
+  if (opcOP == opc_opwrite) {
+    if (analog_status_input[port]  = opc_opread) {
+      analog_status_input[port] = opc_opwrite;
+      pinMode(port,OUTPUT);   
+    }
+     
+    digitalWrite(port,value);  
+  }
+  else
+  {
+    if (analog_status_input[port]  = opc_opwrite) {
+      analog_status_input[port] = opc_opread;
+      pinMode(port,INPUT);   
+    } 
+
+    return analogRead(port); 
+  }  
+
+}
+
 void setup() {
+  byte k;
+
   Serial.begin(9600);
 
-  aOPCSerial.setup(); 
-  aOPCSerial.addItem("D2",opc_readwrite, opc_bool, readwrite_digital);
-  aOPCSerial.addItem("D13",opc_readwrite, opc_bool, readwrite_digital);
+  for (k=0;k<14;k++) digital_status_input[k] = opc_opread; 
+  for (k=0;k<5;k++) analog_status_input[k] = opc_opread; 
+
+  myArduinoUno.setup(); 
+  myArduinoUno.addItem("D0",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D1",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D2",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D3",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D4",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D5",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D5",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D6",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D7",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D8",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D9",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D10",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D11",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D12",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoUno.addItem("D13",opc_readwrite, opc_bool, readwrite_digital);
+  
+  myArduinoUno.addItem("A0",opc_readwrite, opc_float, readwrite_analog);
+  myArduinoUno.addItem("A1",opc_readwrite, opc_float, readwrite_analog);
+  myArduinoUno.addItem("A2",opc_readwrite, opc_float, readwrite_analog);
+  myArduinoUno.addItem("A3",opc_readwrite, opc_float, readwrite_analog);
+  myArduinoUno.addItem("A4",opc_readwrite, opc_float, readwrite_analog);
+  myArduinoUno.addItem("A5",opc_readwrite, opc_float, readwrite_analog);    
+   
 }
 
 void loop() {
-  aOPCSerial.processOPCCommands();
+  myArduinoUno.processOPCCommands();
 }
 
