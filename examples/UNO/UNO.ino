@@ -34,7 +34,7 @@ bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool 
 
 }
 
-float readwrite_analog(const char *itemID, const opcOperation opcOP, const float value) {
+int readwrite_analog(const char *itemID, const opcOperation opcOP, const int value) {
   byte port;
   
   port = atoi(&itemID[1]);
@@ -84,12 +84,12 @@ void setup() {
   myArduinoUno.addItem("D12",opc_readwrite, opc_bool, readwrite_digital);
   myArduinoUno.addItem("D13",opc_readwrite, opc_bool, readwrite_digital);
   
-  myArduinoUno.addItem("A0",opc_readwrite, opc_float, readwrite_analog);
-  myArduinoUno.addItem("A1",opc_readwrite, opc_float, readwrite_analog);
-  myArduinoUno.addItem("A2",opc_readwrite, opc_float, readwrite_analog);
-  myArduinoUno.addItem("A3",opc_readwrite, opc_float, readwrite_analog);
-  myArduinoUno.addItem("A4",opc_readwrite, opc_float, readwrite_analog);
-  myArduinoUno.addItem("A5",opc_readwrite, opc_float, readwrite_analog);    
+  myArduinoUno.addItem("A0",opc_readwrite, opc_int, readwrite_analog);
+  myArduinoUno.addItem("A1",opc_readwrite, opc_int, readwrite_analog);
+  myArduinoUno.addItem("A2",opc_readwrite, opc_int, readwrite_analog);
+  myArduinoUno.addItem("A3",opc_readwrite, opc_int, readwrite_analog);
+  myArduinoUno.addItem("A4",opc_readwrite, opc_int, readwrite_analog);
+  myArduinoUno.addItem("A5",opc_readwrite, opc_int, readwrite_analog);    
    
 }
 
