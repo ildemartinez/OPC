@@ -5,6 +5,8 @@
 #include <Bridge.h>
 #include <YunServer.h>
 #include <YunClient.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
 #define SERIALCOMMAND_MAXCOMMANDLENGTH 64
 #define SERIALCOMMAND_BUFFER 128
@@ -69,6 +71,23 @@ protected:
 public:
   OPCNet();
   void setup();
+  void processOPCCommands();  
+};
+
+class OPCEthernet : public OPC {
+private:
+  EthernetServer *internal_ethernet_server;
+  EthernetClient client;
+  void after_setup(EthernetServer *ainternal_ethernet_server);
+protected:
+  void sendOPCItemsMap();
+public:
+  OPCEthernet();
+  int  setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address);
+  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip);
+  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server);
+  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway);
+  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet);
   void processOPCCommands();  
 };
 

@@ -1,18 +1,24 @@
-#include <OPCNet.h>
-#include <SPI.h>        
+#include <OPC.h>
 #include <Ethernet.h>
+#include <Bridge.h>
+#include <SPI.h>
 
 /*
  * Declaring the OPC object
  */
-OPCNet aOPCNet;
+OPCEthernet aOPCEthernet;
 
 // MAC address from Ethernet shield sticker under board
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xAD, 0x8D };
 IPAddress ip(192, 168, 1, 179);
 IPAddress gateway(192,168,1,1);
-IPAddress dns_server(192,168,1,179);
+IPAddress dns_server(192,168,1,1);
 IPAddress subnet(255,255,255,0);
+
+/*
+ * Server listen port
+ */
+EthernetServer OPCServer(80);
 
 /*
  * create a callback function for the OPCItem
@@ -21,25 +27,27 @@ int callback(const char *itemID, const opcOperation opcOP, const int value){
   return random(-32768,32768);
 }
 
-void setup() {
-  Serial.begin(9600);
+void setup() { 
   
+  Serial.begin(9600);
+
   /*
    * OPCNet Object initialization
-   */
-  aOPCNet.setup(mac,ip,dns,gateway,subnet);
-  
+   */  
+  //aOPCEthernet.setup(mac,ip,dns_server,gateway,subnet);
+  aOPCEthernet.setup(&OPCServer,mac,ip);     
+
   /*
    * random OPCItem declaration
    */
-  aOPCNet.addItem("random",opc_read, opc_int, callback);
+  aOPCEthernet.addItem("random",opc_read, opc_int, callback);
 }
 
 void loop() {
   /*
    * OPC process commands
    */
-  aOPCNet.processOPCCommands(); 
+  aOPCEthernet.processOPCCommands();   
 }
 
 

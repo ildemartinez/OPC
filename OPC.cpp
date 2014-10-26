@@ -1,6 +1,7 @@
 #include <OPC.h>
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include <Ethernet.h>
 
 /************************************* OPC */
 
@@ -207,7 +208,6 @@ void OPCNet::processOPCCommands() {
  client = server.accept();
 
  if (client) {
-  //String command = client.readStringUntil('/');
   bufPos = 0;
   while (client.available())
     buffer[bufPos++] = client.read();
@@ -298,5 +298,109 @@ void OPCNet::processOPCCommands() {
   delay(50); // Poll every 50ms
 }
 
+/************************************* OPCEthernet */
+
+OPCEthernet::OPCEthernet() {  
+}
+
+void OPCEthernet::after_setup(EthernetServer *ainternal_ethernet_server)
+{
+  internal_ethernet_server = ainternal_ethernet_server;  
+  internal_ethernet_server->begin();  
+}
+
+int OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address)
+{
+  Ethernet.begin(mac_address); 
+  after_setup(ainternal_ethernet_server);
+}
+
+void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip)
+{  
+  Ethernet.begin(mac_address,local_ip);
+  after_setup(ainternal_ethernet_server);
+}
+
+void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server)
+{
+  Ethernet.begin(mac_address,local_ip,dns_server);
+  after_setup(ainternal_ethernet_server);
+}
+
+void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway)
+{
+  Ethernet.begin(mac_address,local_ip,dns_server,gateway);  
+  after_setup(ainternal_ethernet_server);
+}
+
+void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
+{
+  Ethernet.begin(mac_address,local_ip,dns_server,gateway,subnet);    
+  after_setup(ainternal_ethernet_server);
+}
+
+void OPCEthernet::sendOPCItemsMap()
+{ 
+  client.print(F("["));
+
+  for(int k=0;k<OPCItemsCount;k++) {
+    if (k) client.print(F(","));    
+    client.print(F("{"));
+    client.print("\"ItemId\":"); 
+    client.print("\""); client.print(OPCItemList[k].itemID); client.print("\"");
+    client.print(",\"AccessRight\":");
+    client.print("\""); client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");
+    client.print(",\"ItemType\":");
+    client.print("\"");client.print(int(OPCItemList[k].itemType));    client.print("\"");
+    client.print(F("}"));
+  }
+
+  client.print(F("]"));
+}
+
+void OPCEthernet::processOPCCommands() 
+{ 
+  client = internal_ethernet_server->available(); 
+  if (client) { 
+    boolean currentLineIsBlank = true; 
+      
+    byte s = 0; 
+    boolean responsed = false;
+
+    while (!responsed && client.connected()) { 
+      if (client.available()) {
+        char c = client.read();       
+
+        if (c == '\n' && currentLineIsBlank) {    
+          if (!strcmp(buffer, "/itemsmap")) { 
+            sendOPCItemsMap();
+          }   
+          
+          responsed = true;         
+        }
+        else if (c == '\n') {
+          currentLineIsBlank = true;
+        }
+        else if (c != '\r') {          
+          currentLineIsBlank = false;
+          
+          switch (s) {
+            case 0 : if (c == 'G') s++; break;
+            case 1 : if (c == 'E') s++; else s = 0; break;
+            case 2 : if (c == 'T') s++; else s = 0; break;
+            case 3 : if (c == ' ') { s++; bufPos = 0;} else s = 0; break;
+            case 4 : if (c != ' ') {
+                      buffer[bufPos++] = c;
+                      buffer[bufPos] = '\0';
+                      }
+                      else s = 0;            
+          }
+        }
+      }
+    }
+    delay(1); // Espera para dar tiempo al navegador a recibir los datos.
+    client.stop(); // Cierra la conexión.
+  }
+}
 
 
