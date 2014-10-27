@@ -78,16 +78,17 @@ class OPCEthernet : public OPC {
 private:
   EthernetServer *internal_ethernet_server;
   EthernetClient client;
-  void after_setup(EthernetServer *ainternal_ethernet_server);
+  void after_setup(uint8_t listen_port);
 protected:
   void sendOPCItemsMap();
+  void processClientCommand();             
 public:
   OPCEthernet();
-  int  setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address);
-  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip);
-  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server);
-  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway);
-  void setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet);
+  int  setup(uint8_t listen_port, uint8_t *mac_address);
+  void setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip);
+  void setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server);
+  void setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway);
+  void setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet);
   void processOPCCommands();  
 };
 

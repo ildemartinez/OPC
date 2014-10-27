@@ -8,8 +8,14 @@
  */
 OPCEthernet aOPCEthernet;
 
-// MAC address from Ethernet shield sticker under board
+/*
+ * MAC address from Ethernet shield sticker under board
+ */
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xAD, 0x8D };
+
+/*
+ * Set your network configuration
+ */
 IPAddress ip(192, 168, 1, 179);
 IPAddress gateway(192,168,1,1);
 IPAddress dns_server(192,168,1,1);
@@ -18,7 +24,7 @@ IPAddress subnet(255,255,255,0);
 /*
  * Server listen port
  */
-EthernetServer OPCServer(80);
+const int listen_port = 80;
 
 /*
  * create a callback function for the OPCItem
@@ -34,8 +40,7 @@ void setup() {
   /*
    * OPCNet Object initialization
    */  
-  //aOPCEthernet.setup(mac,ip,dns_server,gateway,subnet);
-  aOPCEthernet.setup(&OPCServer,mac,ip);     
+  aOPCEthernet.setup(listen_port,mac,ip);     
 
   /*
    * random OPCItem declaration

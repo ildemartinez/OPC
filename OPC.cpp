@@ -205,91 +205,91 @@ void OPCNet::processOPCCommands() {
   int (*int_callback)(const char *itemID, const opcOperation opcOP, const int value);
   float (*float_callback)(const char *itemID, const opcOperation opcOP, const float value);  
 
- client = server.accept();
+  client = server.accept();
 
- if (client) {
-  bufPos = 0;
-  while (client.available())
-    buffer[bufPos++] = client.read();
+  if (client) {
+    bufPos = 0;
+    while (client.available())
+      buffer[bufPos++] = client.read();
 
-  if (bufPos > 2) { // avoid 13 10 chars
-    buffer[bufPos-2] = '\0';
+    if (bufPos > 2) { // avoid 13 10 chars
+      buffer[bufPos-2] = '\0';
 
-    p = strtok_r(buffer,"/",&j);
+      p = strtok_r(buffer,"/",&j);
 
-    if (!j[0]) {
-      if (!strcmp(buffer, "itemsmap")) { 
-       sendOPCItemsMap();
-      }   
-      else
-      { 
-        p = strtok_r(buffer,"=",&j);
-        if (!j[0])  {
-          for (int i = 0; i < OPCItemsCount; i++) {   
-            if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
-              // Execute the stored handler function for the command  
-              client.print(F("[{\"ItemId\":\"")); 
-              client.print(buffer); 
-              client.print(F("\",\"ItemValue\":\""));  
-                
-              switch (OPCItemList[i].itemType) {  
+      if (!j[0]) {
+        if (!strcmp(buffer, "itemsmap")) { 
+         sendOPCItemsMap();
+        }   
+       else
+        { 
+          p = strtok_r(buffer,"=",&j);
+          if (!j[0])  {
+            for (int i = 0; i < OPCItemsCount; i++) {   
+              if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
+                // Execute the stored handler function for the command  
+                client.print(F("[{\"ItemId\":\"")); 
+                client.print(buffer); 
+                client.print(F("\",\"ItemValue\":\""));  
+                  
+                switch (OPCItemList[i].itemType) {  
+                  case opc_bool :
+                            bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
+                            client.print(bool_callback(OPCItemList[i].itemID,opc_opread,NULL));                      
+                            break;
+                  case opc_byte :
+                            byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
+                            client.print(byte_callback(OPCItemList[i].itemID,opc_opread,NULL));
+                            break;
+                  case opc_int : 
+                            int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
+                            client.print(int_callback(OPCItemList[i].itemID,opc_opread,NULL));
+                            break;
+                  case opc_float : 
+                            float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float value))(OPCItemList[i].ptr_callback);
+                            client.print(float_callback(OPCItemList[i].itemID,opc_opread,NULL));
+                            break;                      
+                }          
+                client.print(F("\"}]"));
+
+                matched = true;
+                break;
+              } /* end if */
+            } /* end for */
+          } /* end if */
+          else
+          {
+            for (int i = 0; i < OPCItemsCount; i++) {   
+              if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
+
+                // Call the stored handler function for the command                          
+                switch (OPCItemList[i].itemType) {
                 case opc_bool :
-                          bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
-                          client.print(bool_callback(OPCItemList[i].itemID,opc_opread,NULL));                      
-                          break;
+                        bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
+                        bool_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                        break;
                 case opc_byte :
-                          byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
-                          client.print(byte_callback(OPCItemList[i].itemID,opc_opread,NULL));
-                          break;
+                        byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
+                        byte_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                        break;
                 case opc_int : 
-                          int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
-                          client.print(int_callback(OPCItemList[i].itemID,opc_opread,NULL));
-                          break;
+                        int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
+                        int_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                        break;
                 case opc_float : 
-                          float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float value))(OPCItemList[i].ptr_callback);
-                          client.print(float_callback(OPCItemList[i].itemID,opc_opread,NULL));
-                          break;                      
-              }          
-              client.print(F("\"}]"));
+                        float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float))(OPCItemList[i].ptr_callback);
+                        float_callback(OPCItemList[i].itemID,opc_opwrite,atof(j));
+                        break;                      
+                } /* end case */
 
-              matched = true;
-              break;
-            } /* end if */
-          } /* end for */
-        } /* end if */
-        else
-        {
-          for (int i = 0; i < OPCItemsCount; i++) {   
-            if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
-
-              // Call the stored handler function for the command                          
-              switch (OPCItemList[i].itemType) {
-              case opc_bool :
-                      bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
-                      bool_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
-                      break;
-              case opc_byte :
-                      byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
-                      byte_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
-                      break;
-              case opc_int : 
-                      int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
-                      int_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
-                      break;
-              case opc_float : 
-                      float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float))(OPCItemList[i].ptr_callback);
-                      float_callback(OPCItemList[i].itemID,opc_opwrite,atof(j));
-                      break;                      
-              } /* end case */
-
-              matched = true;
-              break;
-            } /* end if */
-          } /* end for */
+                matched = true;
+                break;
+              } /* end if */
+            } /* end for */
+          } /* end else */
+         }
         } /* end else */
-       }
-      } /* end else */
-    } /* end if */
+      } /* end if */
                
     // Close connection and free resources.
   client.stop();
@@ -303,44 +303,48 @@ void OPCNet::processOPCCommands() {
 OPCEthernet::OPCEthernet() {  
 }
 
-void OPCEthernet::after_setup(EthernetServer *ainternal_ethernet_server)
+void OPCEthernet::after_setup(uint8_t listen_port)
 {
-  internal_ethernet_server = ainternal_ethernet_server;  
+  internal_ethernet_server = new EthernetServer(80); //ainternal_ethernet_server;  
   internal_ethernet_server->begin();  
 }
 
-int OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address)
+int OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address)
 {
   Ethernet.begin(mac_address); 
-  after_setup(ainternal_ethernet_server);
+  after_setup(listen_port);
 }
 
-void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip)
+void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip)
 {  
   Ethernet.begin(mac_address,local_ip);
-  after_setup(ainternal_ethernet_server);
+  after_setup(listen_port);
 }
 
-void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server)
+void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server)
 {
   Ethernet.begin(mac_address,local_ip,dns_server);
-  after_setup(ainternal_ethernet_server);
+  after_setup(listen_port);
 }
 
-void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway)
+void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway)
 {
   Ethernet.begin(mac_address,local_ip,dns_server,gateway);  
-  after_setup(ainternal_ethernet_server);
+  after_setup(listen_port);
 }
 
-void OPCEthernet::setup(EthernetServer *ainternal_ethernet_server, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
+void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
 {
   Ethernet.begin(mac_address,local_ip,dns_server,gateway,subnet);    
-  after_setup(ainternal_ethernet_server);
+  after_setup(listen_port);
 }
 
 void OPCEthernet::sendOPCItemsMap()
 { 
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: text/json");
+  client.println("Connection: close");  // the connection will be closed after completion of the response          
+  client.println();
   client.print(F("["));
 
   for(int k=0;k<OPCItemsCount;k++) {
@@ -358,6 +362,94 @@ void OPCEthernet::sendOPCItemsMap()
   client.print(F("]"));
 }
 
+void OPCEthernet::processClientCommand()
+{ 
+  char *p,*j;
+  bool matched = false;
+  bool (*bool_callback)(const char *itemID, const opcOperation opcOP, const bool value);
+  byte (*byte_callback)(const char *itemID, const opcOperation opcOP, const byte value);  
+  int (*int_callback)(const char *itemID, const opcOperation opcOP, const int value);
+  float (*float_callback)(const char *itemID, const opcOperation opcOP, const float value);  
+    
+  if (!strcmp(buffer, "itemsmap")) {           
+    sendOPCItemsMap();
+  }   
+  else
+  { 
+    p = strtok_r(buffer,"=",&j);
+    if (!j[0])  {
+      for (int i = 0; i < OPCItemsCount; i++) {   
+        if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
+          // Execute the stored handler function for the command  
+
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/json");
+          client.println("Connection: close");  // the connection will be closed after completion of the response          
+          client.println();
+
+          client.print(F("[{\"ItemId\":\"")); 
+          client.print(buffer); 
+          client.print(F("\",\"ItemValue\":\""));  
+                  
+          switch (OPCItemList[i].itemType) {  
+            case opc_bool :
+              bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
+              client.print(bool_callback(OPCItemList[i].itemID,opc_opread,NULL));                      
+              break;
+            case opc_byte :
+              byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
+              client.print(byte_callback(OPCItemList[i].itemID,opc_opread,NULL));
+              break;
+            case opc_int : 
+              int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
+              client.print(int_callback(OPCItemList[i].itemID,opc_opread,NULL));
+              break;
+            case opc_float : 
+              float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float value))(OPCItemList[i].ptr_callback);
+              client.print(float_callback(OPCItemList[i].itemID,opc_opread,NULL));
+              break;                      
+          } /* end switch */
+                
+          client.print(F("\"}]"));
+
+          matched = true;
+          break;
+        } /* end if */
+      } /* end for */
+    } /* end if */
+    else
+    {
+      for (int i = 0; i < OPCItemsCount; i++) {   
+        if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
+
+          // Call the stored handler function for the command                          
+          switch (OPCItemList[i].itemType) {
+          case opc_bool :
+                  bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
+                  bool_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                  break;
+          case opc_byte :
+                  byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
+                  byte_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                  break;
+          case opc_int : 
+                  int_callback = (int (*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
+                  int_callback(OPCItemList[i].itemID,opc_opwrite,atoi(j));
+                  break;
+          case opc_float : 
+                  float_callback = (float (*)(const char *itemID, const opcOperation opcOP, const float))(OPCItemList[i].ptr_callback);
+                  float_callback(OPCItemList[i].itemID,opc_opwrite,atof(j));
+                  break;                      
+          } /* end case */
+
+          matched = true;
+          break;
+        } /* end if */
+      } /* end for */
+    } /* end else */
+  } /* end else */                
+}
+
 void OPCEthernet::processOPCCommands() 
 { 
   client = internal_ethernet_server->available(); 
@@ -372,10 +464,7 @@ void OPCEthernet::processOPCCommands()
         char c = client.read();       
 
         if (c == '\n' && currentLineIsBlank) {    
-          if (!strcmp(buffer, "/itemsmap")) { 
-            sendOPCItemsMap();
-          }   
-          
+          processClientCommand();                       
           responsed = true;         
         }
         else if (c == '\n') {
@@ -388,8 +477,9 @@ void OPCEthernet::processOPCCommands()
             case 0 : if (c == 'G') s++; break;
             case 1 : if (c == 'E') s++; else s = 0; break;
             case 2 : if (c == 'T') s++; else s = 0; break;
-            case 3 : if (c == ' ') { s++; bufPos = 0;} else s = 0; break;
-            case 4 : if (c != ' ') {
+            case 3 : if (c == ' ') s++; else s = 0; break;
+            case 4 : if (c == '/') { s++; bufPos = 0;} else s = 0; break;
+            case 5 : if (c != ' ') {
                       buffer[bufPos++] = c;
                       buffer[bufPos] = '\0';
                       }
