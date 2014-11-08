@@ -3,6 +3,8 @@
  */
 #include <OPC.h>
 #include <Bridge.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
 OPCSerial myArduinoUno;
 

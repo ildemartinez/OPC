@@ -14,6 +14,8 @@
  */
 #include <OPC.h>
 #include <Bridge.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
 /*
  * 2.- Declaring the OPC object
