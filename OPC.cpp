@@ -419,6 +419,11 @@ void OPCEthernet::processClientCommand()
     } /* end if */
     else
     {
+      client.println("HTTP/1.1 200 OK");
+      client.println("Content-Type: text/json");
+      client.println("Connection: close");  // the connection will be closed after completion of the response          
+      client.println();
+          
       for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
 
