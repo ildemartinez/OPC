@@ -5,8 +5,7 @@
 
 /************************************* OPC */
 
-OPC::OPC() : OPCItemList(NULL) ,  OPCItemsCount(0) {
-}
+OPC::OPC() : OPCItemList(NULL) ,  OPCItemsCount(0) {}
 
 void OPC::addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, bool (*function)(const char *itemID, const opcOperation opcOP, const bool value))
 { 
@@ -53,9 +52,7 @@ void OPC::internaladdItem(const char *itemID, opcAccessRights opcAccessRight, op
 
 /************************************* OPCSerial */
 
-void OPCSerial::setup()
-{
-}
+void OPCSerial::setup() {}
 
 void OPCSerial::sendOPCItemsMap()
 { 
@@ -168,9 +165,7 @@ void OPCSerial::processOPCCommands() {
 
 /************************************* OPCNet */
 
-OPCNet::OPCNet() {
-      
-}
+OPCNet::OPCNet() {}
 
 void OPCNet::setup() {
   Bridge.begin();
@@ -305,7 +300,7 @@ OPCEthernet::OPCEthernet() {
 
 void OPCEthernet::after_setup(uint8_t listen_port)
 {
-  internal_ethernet_server = new EthernetServer(80); //ainternal_ethernet_server;  
+  internal_ethernet_server = new EthernetServer(listen_port);   
   internal_ethernet_server->begin();  
 }
 
@@ -341,22 +336,17 @@ void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress loc
 
 void OPCEthernet::sendOPCItemsMap()
 { 
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/json");
-  client.println("Connection: close");  // the connection will be closed after completion of the response          
-  client.println();
   client.print(F("["));
 
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) client.print(F(","));    
-    client.print(F("{"));
-    client.print("\"ItemId\":"); 
-    client.print("\""); client.print(OPCItemList[k].itemID); client.print("\"");
-    client.print(",\"AccessRight\":");
-    client.print("\""); client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");
-    client.print(",\"ItemType\":");
-    client.print("\"");client.print(int(OPCItemList[k].itemType));    client.print("\"");
-    client.print(F("}"));
+    client.print(F("{\"ItemId\":\""));
+    client.print(OPCItemList[k].itemID); 
+    client.print(F("\",\"AccessRight\":\""));
+    client.print(int(OPCItemList[k].opcAccessRight)); 
+    client.print(F("\",\"ItemType\":\""));
+    client.print(int(OPCItemList[k].itemType));
+    client.print(F("\"}"));
   }
 
   client.print(F("]"));
@@ -370,7 +360,9 @@ void OPCEthernet::processClientCommand()
   byte (*byte_callback)(const char *itemID, const opcOperation opcOP, const byte value);  
   int (*int_callback)(const char *itemID, const opcOperation opcOP, const int value);
   float (*float_callback)(const char *itemID, const opcOperation opcOP, const float value);  
-    
+  
+  client.println(F("HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nConnection: close\r\n"));
+
   if (!strcmp(buffer, "itemsmap")) {           
     sendOPCItemsMap();
   }   
@@ -381,12 +373,6 @@ void OPCEthernet::processClientCommand()
       for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
           // Execute the stored handler function for the command  
-
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: text/json");
-          client.println("Connection: close");  // the connection will be closed after completion of the response          
-          client.println();
-
           client.print(F("[{\"ItemId\":\"")); 
           client.print(buffer); 
           client.print(F("\",\"ItemValue\":\""));  
@@ -418,12 +404,7 @@ void OPCEthernet::processClientCommand()
       } /* end for */
     } /* end if */
     else
-    {
-      client.println("HTTP/1.1 200 OK");
-      client.println("Content-Type: text/json");
-      client.println("Connection: close");  // the connection will be closed after completion of the response          
-      client.println();
-          
+    {        
       for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                                    
 
