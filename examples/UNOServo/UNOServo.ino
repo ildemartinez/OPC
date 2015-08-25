@@ -12,27 +12,49 @@ OPCSerial aOPCSerial;
 /*
  * Declarin the servo information
  */
-Servo myservo;  // create servo object to control a servo                
+Servo myservo1, myservo2;  // create servo object to control a servo                
+
+const char servo1[] = "servo1";
+const char servo2[] = "servo2";
 
 /*
  * create a callback function for the OPCItem
  */
 int callback(const char *itemID, const opcOperation opcOP, const int value){
-  static int pos;
+  static int pos_servo1, pos_servo2;
 
-  /*
-   * if operation is a write command from OPC Client
-   */
-  if (opcOP == opc_opwrite) {
-    pos = value;
-
-    myservo.write(pos);
-  } 
-  else 
+  if (!strcmp(itemID,servo1))
+  {
     /*
-     * read the led status
-     */
-    return pos;  
+    * if operation is a write command from OPC Client
+    */
+    if (opcOP == opc_opwrite) {
+      pos_servo1 = value;
+
+      myservo1.write(pos_servo1);
+    } 
+    else 
+      /*
+      * read the led status
+      */
+      return pos_servo1;  
+  }
+  else if (!strcmp(itemID,servo2))
+  {
+    /*
+    * if operation is a write command from OPC Client
+    */
+    if (opcOP == opc_opwrite) {
+      pos_servo2 = value;
+
+      myservo2.write(pos_servo2);
+    } 
+    else 
+      /*
+      * read the led status
+      */
+      return pos_servo2;  
+  }
 
 }
 
@@ -40,7 +62,8 @@ void setup() {
   Serial.begin(9600);
   
   // Pin 9 to servo control
-  myservo.attach(9);
+  myservo1.attach(9);
+  myservo2.attach(10);
   
   /*
    * OPC Object initialization
@@ -50,7 +73,8 @@ void setup() {
   /*
    * led OPCItem declaration
    */
-  aOPCSerial.addItem("servo",opc_readwrite, opc_int, callback);
+  aOPCSerial.addItem("servo1",opc_readwrite, opc_int, callback);
+  aOPCSerial.addItem("servo2",opc_readwrite, opc_int, callback);  
 }
 
 void loop() {
