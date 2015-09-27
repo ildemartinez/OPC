@@ -180,7 +180,7 @@ void OPCNet::sendOPCItemsMap()
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) client.print(F(","));    
     client.print(F("{"));
-    client.print("\"ItemId\":"); 
+    client.print(F("\"ItemId\":")); 
     client.print("\""); client.print(OPCItemList[k].itemID); client.print("\"");
     client.print(",\"AccessRight\":");
     client.print("\""); client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");

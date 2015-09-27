@@ -40,7 +40,7 @@ bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool 
   if (opcOP == opc_opwrite) {
     if (digital_status_input[port] == opc_opread) {
       digital_status_input[port] = opc_opwrite;
-      pinMode(port,OUTPUT);   
+      pinMode(port,OUTPUT);
     }
       
     digitalWrite(port,value);  
@@ -49,7 +49,7 @@ bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool 
   {
     if (digital_status_input[port] == opc_opwrite) {
       digital_status_input[port] = opc_opread;
-      pinMode(port,INPUT);   
+     // pinMode(port,INPUT);
     } 
 
     return digitalRead(port); 
@@ -68,13 +68,13 @@ int readwrite_analog(const char *itemID, const opcOperation opcOP, const int val
       pinMode(port,OUTPUT);   
     }
      
-    digitalWrite(port,value);  
+    analogWrite(port,value);  
   }
   else
   {
     if (analog_status_input[port] == opc_opwrite) {
       analog_status_input[port] = opc_opread;
-      pinMode(port,INPUT);   
+      //pinMode(port,INPUT);   
     } 
 
     return analogRead(port); 
@@ -86,8 +86,8 @@ void setup() {
   byte k;
 
   for (k=0;k<14;k++) digital_status_input[k] = opc_opread; 
-  for (k=0;k<5;k++) analog_status_input[k] = opc_opread; 
-
+  for (k=0;k<5;k++)  analog_status_input[k] = opc_opread; 
+  
   /*
    * OPC Object initialization
    */
