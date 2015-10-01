@@ -180,13 +180,17 @@ void OPCNet::sendOPCItemsMap()
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) client.print(F(","));    
     client.print(F("{"));
-    client.print(F("\"ItemId\":")); 
-    client.print("\""); client.print(OPCItemList[k].itemID); client.print("\"");
-    client.print(",\"AccessRight\":");
-    client.print("\""); client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");
-    client.print(",\"ItemType\":");
-    client.print("\"");client.print(int(OPCItemList[k].itemType));    client.print("\"");
-    client.print(F("}"));
+    client.print(F("\"ItemId\":\"")); 
+    //client.print("\""); 
+    client.print(OPCItemList[k].itemID); client.print("\"");
+    client.print(",\"AccessRight\":\"");
+    //client.print("\""); 
+    client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");
+    client.print(",\"ItemType\":\"");
+    //client.print("\"");
+    client.print(int(OPCItemList[k].itemType));    
+    client.print(F("\"}"));
+    //client.print(F("}"));
   }
 
   client.print(F("]"));
