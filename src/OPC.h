@@ -36,8 +36,6 @@ protected:
   byte OPCItemsCount;
   char buffer[SERIALCOMMAND_BUFFER + 1];
   byte bufPos; 
-
- // virtual void sendOPCItemsMap(); 
 public:
   OPC();
   struct OPCItemType {     

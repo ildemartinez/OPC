@@ -175,25 +175,33 @@ void OPCNet::setup() {
 
 void OPCNet::sendOPCItemsMap()
 { 
-  client.print(F("["));
-
+  buffer[0]='[';
+  buffer[1]='\0';
+  
   for(int k=0;k<OPCItemsCount;k++) {
-    if (k) client.print(F(","));    
-    client.print(F("{"));
-    client.print(F("\"ItemId\":\"")); 
-    //client.print("\""); 
-    client.print(OPCItemList[k].itemID); client.print("\"");
-    client.print(",\"AccessRight\":\"");
-    //client.print("\""); 
-    client.print(int(OPCItemList[k].opcAccessRight)); client.print("\"");
-    client.print(",\"ItemType\":\"");
-    //client.print("\"");
-    client.print(int(OPCItemList[k].itemType));    
-    client.print(F("\"}"));
-    //client.print(F("}"));
-  }
+    if (k) strcat(buffer,",");    
+    
+    strcat(buffer,"{\"ItemId\":\"");
+    strcat(buffer,OPCItemList[k].itemID);
+    strcat(buffer,"\",\"AccessRight\":\"");
+    
+    bufPos = strlen(buffer);
+    buffer[bufPos] = 48 + int(OPCItemList[k].opcAccessRight);
+    buffer[bufPos+1] = '\0';
 
-  client.print(F("]"));
+    strcat(buffer,"\",\"ItemType\":\"");
+
+    bufPos = strlen(buffer);
+    buffer[bufPos] = 48 + int(OPCItemList[k].itemType);
+    buffer[bufPos+1] = '\0';
+
+    strcat(buffer,"\"}");  
+
+    if (k==OPCItemsCount-1) strcat(buffer,"]");
+
+    client.write((unsigned char *) buffer,strlen(buffer));
+    buffer[0]='\0';
+  }
 }
 
 void OPCNet::processOPCCommands() {
@@ -227,9 +235,15 @@ void OPCNet::processOPCCommands() {
             for (int i = 0; i < OPCItemsCount; i++) {   
               if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
                 // Execute the stored handler function for the command  
-                client.print(F("[{\"ItemId\":\"")); 
-                client.print(buffer); 
-                client.print(F("\",\"ItemValue\":\""));  
+                buffer[0] = '\0';
+                strcat(buffer,"[{\"ItemId\":\"");
+                strcat(buffer,OPCItemList[i].itemID);
+                strcat(buffer,"\",\"ItemValue\":\"");
+                client.write((unsigned char *) buffer,strlen(buffer));
+
+                //client.print(F("[{\"ItemId\":\"")); 
+                //client.print(OPCItemList[i].itemID); 
+                //client.print(F("\",\"ItemValue\":\""));  
                   
                 switch (OPCItemList[i].itemType) {  
                   case opc_bool :
