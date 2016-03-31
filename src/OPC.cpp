@@ -29,11 +29,6 @@ void OPC::addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes o
 
 void OPC::internaladdItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, int callback_function)  
 {
-  //extern int __heap_start, *__brkval; 
-  //int v; 
-  //Serial.print(F("Free memory:"));
-  //Serial.println( (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval));
-  
   OPCItemList = (OPCItemType *) realloc(OPCItemList, (OPCItemsCount + 1) * sizeof(OPCItemType));
   if (OPCItemList != NULL) {
     OPCItemList[OPCItemsCount].itemType = opctype; 
@@ -71,7 +66,7 @@ void OPCSerial::sendOPCItemsMap()
 }
 
 OPCSerial::OPCSerial()  {
-    buffer[0] = '\0';
+  buffer[0] = '\0';
 }
 
 void OPCSerial::processOPCCommands() {
@@ -174,9 +169,9 @@ void OPCNet::setup() {
 }
 
 void OPCNet::sendOPCItemsMap()
-{ 
-  buffer[0]='[';
-  buffer[1]='\0';
+{  
+  buffer[0]='\0';
+  strcat(buffer,"{\"ItemsMap\":[");
   
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) strcat(buffer,",");    
@@ -202,6 +197,8 @@ void OPCNet::sendOPCItemsMap()
     client.write((unsigned char *) buffer,strlen(buffer));
     buffer[0]='\0';
   }
+
+  client.write((unsigned char *) "}",1);
 }
 
 void OPCNet::processOPCCommands() {
@@ -236,14 +233,10 @@ void OPCNet::processOPCCommands() {
               if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
                 // Execute the stored handler function for the command  
                 buffer[0] = '\0';
-                strcat(buffer,"[{\"ItemId\":\"");
+                strcat(buffer,"{\"ItemId\":\"");
                 strcat(buffer,OPCItemList[i].itemID);
                 strcat(buffer,"\",\"ItemValue\":\"");
-                client.write((unsigned char *) buffer,strlen(buffer));
-
-                //client.print(F("[{\"ItemId\":\"")); 
-                //client.print(OPCItemList[i].itemID); 
-                //client.print(F("\",\"ItemValue\":\""));  
+                client.write((unsigned char *) buffer,strlen(buffer)); 
                   
                 switch (OPCItemList[i].itemType) {  
                   case opc_bool :
@@ -263,7 +256,7 @@ void OPCNet::processOPCCommands() {
                             client.print(float_callback(OPCItemList[i].itemID,opc_opread,NULL));
                             break;                      
                 }          
-                client.print(F("\"}]"));
+                client.print(F("\"}"));
 
                 matched = true;
                 break;
@@ -313,8 +306,7 @@ void OPCNet::processOPCCommands() {
 
 /************************************* OPCEthernet */
 
-OPCEthernet::OPCEthernet() {  
-}
+OPCEthernet::OPCEthernet() {}
 
 void OPCEthernet::after_setup(uint8_t listen_port)
 {
@@ -354,20 +346,35 @@ void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress loc
 
 void OPCEthernet::sendOPCItemsMap()
 { 
-  client.print(F("["));
+  buffer[0]='\0';
+  strcat(buffer,"{\"ItemsMap\":[");
 
   for(int k=0;k<OPCItemsCount;k++) {
-    if (k) client.print(F(","));    
-    client.print(F("{\"ItemId\":\""));
-    client.print(OPCItemList[k].itemID); 
-    client.print(F("\",\"AccessRight\":\""));
-    client.print(int(OPCItemList[k].opcAccessRight)); 
-    client.print(F("\",\"ItemType\":\""));
-    client.print(int(OPCItemList[k].itemType));
-    client.print(F("\"}"));
+    if (k) strcat(buffer,",");    
+    
+    strcat(buffer,"{\"ItemId\":\"");
+    strcat(buffer,OPCItemList[k].itemID);
+    strcat(buffer,"\",\"AccessRight\":\"");
+    
+    bufPos = strlen(buffer);
+    buffer[bufPos] = 48 + int(OPCItemList[k].opcAccessRight);
+    buffer[bufPos+1] = '\0';
+
+    strcat(buffer,"\",\"ItemType\":\"");
+
+    bufPos = strlen(buffer);
+    buffer[bufPos] = 48 + int(OPCItemList[k].itemType);
+    buffer[bufPos+1] = '\0';
+
+    strcat(buffer,"\"}");  
+
+    if (k==OPCItemsCount-1) strcat(buffer,"]");
+
+    client.write((unsigned char *) buffer,strlen(buffer));
+    buffer[0]='\0';
   }
 
-  client.print(F("]"));
+  client.write((unsigned char *) "}",1);
 }
 
 void OPCEthernet::processClientCommand()
@@ -391,14 +398,14 @@ void OPCEthernet::processClientCommand()
       for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
           // Execute the stored handler function for the command  
-          client.print(F("[{\"ItemId\":\"")); 
-          client.print(buffer); 
-          client.print(F("\",\"ItemValue\":\""));  
+          client.print(F("{\"ItemId\":\""));
+          client.print(buffer);
+          client.print(F("\",\"ItemValue\":\""));
                   
           switch (OPCItemList[i].itemType) {  
             case opc_bool :
               bool_callback = (bool (*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
-              client.print(bool_callback(OPCItemList[i].itemID,opc_opread,NULL));                      
+              client.print(bool_callback(OPCItemList[i].itemID,opc_opread,NULL));
               break;
             case opc_byte :
               byte_callback = (byte (*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
@@ -414,7 +421,7 @@ void OPCEthernet::processClientCommand()
               break;                      
           } /* end switch */
                 
-          client.print(F("\"}]"));
+          client.print(F("\"}"));
 
           matched = true;
           break;
@@ -457,6 +464,7 @@ void OPCEthernet::processClientCommand()
 void OPCEthernet::processOPCCommands() 
 { 
   client = internal_ethernet_server->available(); 
+
   if (client) { 
     boolean currentLineIsBlank = true; 
       
