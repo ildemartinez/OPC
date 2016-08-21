@@ -171,20 +171,20 @@ void OPCNet::setup() {
 void OPCNet::sendOPCItemsMap()
 {  
   buffer[0]='\0';
-  strcat(buffer,"{\"ItemsMap\":[");
+  strcat(buffer,"{\"M\":[");   // old ItemsMap tag
   
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) strcat(buffer,",");    
     
-    strcat(buffer,"{\"ItemId\":\"");
+    strcat(buffer,"{\"I\":\""); // old ItemId tag
     strcat(buffer,OPCItemList[k].itemID);
-    strcat(buffer,"\",\"AccessRight\":\"");
+    strcat(buffer,"\",\"R\":\""); // old AccessRight tag
     
     bufPos = strlen(buffer);
     buffer[bufPos] = 48 + int(OPCItemList[k].opcAccessRight);
     buffer[bufPos+1] = '\0';
 
-    strcat(buffer,"\",\"ItemType\":\"");
+    strcat(buffer,"\",\"T\":\""); // old ItemType tag
 
     bufPos = strlen(buffer);
     buffer[bufPos] = 48 + int(OPCItemList[k].itemType);
@@ -233,9 +233,9 @@ void OPCNet::processOPCCommands() {
               if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
                 // Execute the stored handler function for the command  
                 buffer[0] = '\0';
-                strcat(buffer,"{\"ItemId\":\"");
+                strcat(buffer,"{\"I\":\""); // old ItemId tag
                 strcat(buffer,OPCItemList[i].itemID);
-                strcat(buffer,"\",\"ItemValue\":\"");
+                strcat(buffer,"\",\"V\":\""); // old ItemValue tag
                 client.write((unsigned char *) buffer,strlen(buffer)); 
                   
                 switch (OPCItemList[i].itemType) {  
@@ -347,20 +347,20 @@ void OPCEthernet::setup(uint8_t listen_port, uint8_t *mac_address, IPAddress loc
 void OPCEthernet::sendOPCItemsMap()
 { 
   buffer[0]='\0';
-  strcat(buffer,"{\"ItemsMap\":[");
+  strcat(buffer,"{\"M\":[");  // Old ItemsMap
 
   for(int k=0;k<OPCItemsCount;k++) {
     if (k) strcat(buffer,",");    
     
-    strcat(buffer,"{\"ItemId\":\"");
+    strcat(buffer,"{\"I\":\""); // old ItemId tag
     strcat(buffer,OPCItemList[k].itemID);
-    strcat(buffer,"\",\"AccessRight\":\"");
+    strcat(buffer,"\",\"R\":\""); // old AccessRight tag
     
     bufPos = strlen(buffer);
     buffer[bufPos] = 48 + int(OPCItemList[k].opcAccessRight);
     buffer[bufPos+1] = '\0';
 
-    strcat(buffer,"\",\"ItemType\":\"");
+    strcat(buffer,"\",\"T\":\""); // old ItemType tag
 
     bufPos = strlen(buffer);
     buffer[bufPos] = 48 + int(OPCItemList[k].itemType);
@@ -398,9 +398,9 @@ void OPCEthernet::processClientCommand()
       for (int i = 0; i < OPCItemsCount; i++) {   
         if (!strcmp(buffer, OPCItemList[i].itemID))  {                             
           // Execute the stored handler function for the command  
-          client.print(F("{\"ItemId\":\""));
+          client.print(F("{\"I\":\"")); // old ItemId tag
           client.print(buffer);
-          client.print(F("\",\"ItemValue\":\""));
+          client.print(F("\",\"V\":\"")); // old ItemValue tag
                   
           switch (OPCItemList[i].itemType) {  
             case opc_bool :
