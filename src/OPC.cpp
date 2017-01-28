@@ -7,6 +7,15 @@
 
 OPC::OPC() : OPCItemList(NULL) ,  OPCItemsCount(0) {}
 
+OPCItemType OPC::getOPCItem(const char *itemID)
+{
+  //return NULL;
+
+  for (int i = 0; i < OPCItemsCount; i++)
+    if (!strncmp(itemID, OPCItemList[i].itemID, SERIALCOMMAND_MAXCOMMANDLENGTH)) 
+      return OPCItemList[i]; 
+}
+
 void OPC::addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, bool (*function)(const char *itemID, const opcOperation opcOP, const bool value))
 { 
   internaladdItem(itemID, opcAccessRight, opctype, int(function));

@@ -19,6 +19,7 @@ typedef enum opctypes{
 };
 
 typedef enum opcAccessRights{
+  opc_undefined,
   opc_read,   
   opc_write,
   opc_readwrite
@@ -27,6 +28,13 @@ typedef enum opcAccessRights{
 typedef enum opcOperation{
   opc_opread,   
   opc_opwrite,
+};
+
+struct OPCItemType {     
+  char *itemID;
+  opcAccessRights opcAccessRight;
+  opctypes itemType;
+  unsigned int ptr_callback;
 };
 
 class OPC {
@@ -38,17 +46,14 @@ protected:
   byte bufPos; 
 public:
   OPC();
-  struct OPCItemType {     
-    char *itemID;
-    opcAccessRights opcAccessRight;
-    opctypes itemType;
-    unsigned int ptr_callback;
-  };                                    
-  OPCItemType *OPCItemList;
+                                    
+  OPCItemType *OPCItemList; 
+  OPCItemType getOPCItem(const char *itemID);
+
   void addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, bool  (*function)(const char *itemID, const opcOperation opcOP, const bool value));  
   void addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, byte  (*function)(const char *itemID, const opcOperation opcOP, const byte value));  
   void addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, int   (*function)(const char *itemID, const opcOperation opcOP, const int value));
-  void addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, float (*function)(const char *itemID, const opcOperation opcOP, const float value));  
+  void addItem(const char *itemID, opcAccessRights opcAccessRight, opctypes opctype, float (*function)(const char *itemID, const opcOperation opcOP, const float value));    
 };
 
 class OPCSerial : public OPC {
