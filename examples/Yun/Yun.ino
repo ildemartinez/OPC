@@ -11,56 +11,74 @@ OPCNet myYun;
 /*
  * set led status from OPC Client
  */
-opcOperation digital_status_input[14], analog_status_input[6];
+opcAccessRights digital_status_input[14], analog_status_input[6];
 
 bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool value)
 {
   byte port;
-  
+    
+  OPCItemType aOPCItem = myYun.getOPCItem(itemID);                     
+
   port = atoi(&itemID[1]);
-
+           
   if (opcOP == opc_opwrite) {
-    if (digital_status_input[port] == opc_opread) {
-      digital_status_input[port] = opc_opwrite;
-      pinMode(port,OUTPUT);
-    }
+    if ((aOPCItem.opcAccessRight == opc_write) || (aOPCItem.opcAccessRight == opc_readwrite)) {
       
-    digitalWrite(port,value);  
-  }
-  else
-  {
-    if (digital_status_input[port] == opc_opwrite) {
-      digital_status_input[port] = opc_opread;
-     // pinMode(port,INPUT);
-    } 
+      if (digital_status_input[port] != opc_write) {
+        pinMode(port, OUTPUT);
+        digital_status_input[port] = opc_write;
+      }
 
-    return digitalRead(port); 
-  }  
+      digitalWrite(port,value);
+    }
+  }
+
+  if (opcOP == opc_opread) {
+    if ((aOPCItem.opcAccessRight == opc_read) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (digital_status_input[port] != opc_read) {
+        pinMode(port, INPUT);
+        digital_status_input[port] = opc_read;
+      }
+
+      return digitalRead(port);
+    }
+  } 
 
 }
 
-int readwrite_analog(const char *itemID, const opcOperation opcOP, const int value) {
+int readwrite_analog(const char *itemID, const opcOperation opcOP, const int value) 
+{
   byte port;
-  
+    
+  OPCItemType aOPCItem = myYun.getOPCItem(itemID);                     
+
   port = atoi(&itemID[1]);
-
+           
   if (opcOP == opc_opwrite) {
-    if (analog_status_input[port] == opc_opread) {
-      analog_status_input[port] = opc_opwrite;
-      pinMode(port,OUTPUT);   
-    }
-     
-    analogWrite(port,value);  
-  }
-  else
-  {
-    if (analog_status_input[port] == opc_opwrite) {
-      analog_status_input[port] = opc_opread;
-      //pinMode(port,INPUT);   
-    } 
+    if ((aOPCItem.opcAccessRight == opc_write) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (analog_status_input[port] != opc_write) {
+        pinMode(port, OUTPUT);
+        analog_status_input[port] = opc_write;
+      }
 
-    return analogRead(port); 
-  }  
+      analogWrite(port,value);
+    }
+  }
+
+  if (opcOP == opc_opread) {
+    if ((aOPCItem.opcAccessRight == opc_read) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (analog_status_input[port] != opc_read) {
+        pinMode(port, INPUT);
+        analog_status_input[port] = opc_read;
+      }
+
+      return analogRead(port);
+    }
+  } 
+  
 
 }
 
