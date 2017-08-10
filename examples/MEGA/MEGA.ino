@@ -104,9 +104,36 @@ void setup() {
   myArduinoMEGA.addItem("D13",opc_write, opc_bool, readwrite_digital); 
   
   myArduinoMEGA.addItem("D22",opc_readwrite, opc_bool, readwrite_digital);
-  myArduinoMEGA.addItem("D23",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D24",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D25",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D26",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D27",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D28",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D29",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D30",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D31",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D32",opc_readwrite, opc_bool, readwrite_digital);  
-  myArduinoMEGA.addItem("D33",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D34",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D35",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D36",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D37",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D38",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D39",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D40",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D41",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D42",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D43",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D44",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D45",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D46",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D47",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D48",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D49",opc_readwrite, opc_bool, readwrite_digital);  
-  myArduinoMEGA.addItem("D50",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D51",opc_readwrite, opc_bool, readwrite_digital);  myArduinoMEGA.addItem("D52",opc_readwrite, opc_bool, readwrite_digital);  
+  myArduinoMEGA.addItem("D23",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D24",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D25",opc_readwrite, opc_bool, readwrite_digital);  
+  myArduinoMEGA.addItem("D26",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D27",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D28",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D29",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D30",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D31",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D32",opc_readwrite, opc_bool, readwrite_digital);  
+  myArduinoMEGA.addItem("D33",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D34",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D35",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D36",opc_readwrite, opc_bool, readwrite_digital);
+  myArduinoMEGA.addItem("D37",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D38",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D39",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D40",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D41",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D42",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D43",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D44",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D45",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D46",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D47",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D48",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D49",opc_readwrite, opc_bool, readwrite_digital);  
+  myArduinoMEGA.addItem("D50",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D51",opc_readwrite, opc_bool, readwrite_digital); 
+  myArduinoMEGA.addItem("D52",opc_readwrite, opc_bool, readwrite_digital);  
   myArduinoMEGA.addItem("D53",opc_readwrite, opc_bool, readwrite_digital);  
 
   myArduinoMEGA.addItem("A0",opc_readwrite, opc_int, readwrite_analog);
@@ -131,4 +158,3 @@ void setup() {
 void loop() {
   myArduinoMEGA.processOPCCommands();
 }
-
