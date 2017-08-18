@@ -19,9 +19,9 @@ byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xAD, 0x8D };
 /*
  * Set your network configuration
  */
-IPAddress ip(10, 0, 0, 179);
-IPAddress gateway(10,0,0,1);
-IPAddress dns_server(10,0,0,1);
+IPAddress ip(10, 1, 0, 179);
+IPAddress gateway(10,1,0,1);
+IPAddress dns_server(10,1,0,1);
 IPAddress subnet(255,255,255,0);
 
 /*

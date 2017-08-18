@@ -8,57 +8,73 @@
 
 OPCSerial myArduinoUno;
 
-opcOperation digital_status_input[14], analog_status_input[6];
+opcAccessRights digital_status_input[14], analog_status_input[6];
 
 bool readwrite_digital(const char *itemID, const opcOperation opcOP, const bool value)
 {
   byte port;
   
+  OPCItemType aOPCItem = myArduinoUno.getOPCItem(itemID);
+
   port = atoi(&itemID[1]);
 
-  if (opcOP == opc_opwrite) {
-    if (digital_status_input[port]  = opc_opread) {
-      digital_status_input[port] = opc_opwrite;
-      pinMode(port,OUTPUT);   
-    }
+   if (opcOP == opc_opwrite) {
+    if ((aOPCItem.opcAccessRight == opc_write) || (aOPCItem.opcAccessRight == opc_readwrite)) {
       
-    digitalWrite(port,value);  
+      if (digital_status_input[port] != opc_write) {
+        pinMode(port, OUTPUT);
+        digital_status_input[port] = opc_write;
+      }
+
+      digitalWrite(port,value);
+    }
   }
-  else
-  {
-    if (digital_status_input[port]  = opc_opwrite) {
-      digital_status_input[port] = opc_opread;
-      pinMode(port,INPUT);   
-    } 
 
-    return digitalRead(port); 
-  }  
+  if (opcOP == opc_opread) {
+    if ((aOPCItem.opcAccessRight == opc_read) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (digital_status_input[port] != opc_read) {
+       //pinMode(port, INPUT);
+        digital_status_input[port] = opc_read;
+      }
 
+      return digitalRead(port);
+    }
+  } 
 }
 
-int readwrite_analog(const char *itemID, const opcOperation opcOP, const int value) {
-  byte port;
-  
+int readwrite_analog(const char *itemID, const opcOperation opcOP, const int value) 
+{
+ byte port;
+    
+  OPCItemType aOPCItem = myArduinoUno.getOPCItem(itemID);                     
+
   port = atoi(&itemID[1]);
-
+           
   if (opcOP == opc_opwrite) {
-    if (analog_status_input[port]  = opc_opread) {
-      analog_status_input[port] = opc_opwrite;
-      pinMode(port,OUTPUT);   
+    if ((aOPCItem.opcAccessRight == opc_write) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (analog_status_input[port] != opc_write) {
+        pinMode(port, OUTPUT);
+        analog_status_input[port] = opc_write;
+      }
+
+      analogWrite(port,value);
     }
-     
-    digitalWrite(port,value);  
   }
-  else
-  {
-    if (analog_status_input[port]  = opc_opwrite) {
-      analog_status_input[port] = opc_opread;
-      pinMode(port,INPUT);   
-    } 
 
-    return analogRead(port); 
-  }  
+  if (opcOP == opc_opread) {
+    if ((aOPCItem.opcAccessRight == opc_read) || (aOPCItem.opcAccessRight == opc_readwrite)) {
+      
+      if (analog_status_input[port] != opc_read) {
+        //pinMode(port, INPUT);
+        analog_status_input[port] = opc_read;
+      }
 
+      return analogRead(port);
+    }
+  } 
+  
 }
 
 void setup() {
@@ -66,8 +82,8 @@ void setup() {
 
   Serial.begin(9600);
 
-  for (k=0;k<14;k++) digital_status_input[k] = opc_opread; 
-  for (k=0;k<5;k++) analog_status_input[k] = opc_opread; 
+  for (k=0;k<14;k++) digital_status_input[k] = opc_undefined; 
+  for (k=0;k<5;k++) analog_status_input[k] = opc_undefined; 
 
   myArduinoUno.setup(); 
   myArduinoUno.addItem("D0",opc_readwrite, opc_bool, readwrite_digital);
