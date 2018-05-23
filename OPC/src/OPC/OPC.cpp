@@ -66,7 +66,7 @@ void OPCSerial::sendOPCItemsMap()
 {
 	Serial.print(F("<0"));
 
-	for (int k = 0; k<OPCItemsCount; k++) {
+	for (int k = 0; k < OPCItemsCount; k++) {
 		Serial.print(F(","));
 		Serial.print(OPCItemList[k].itemID);
 		Serial.print(F(","));
@@ -186,7 +186,7 @@ void OPCNet::sendOPCItemsMap()
 	buffer[0] = '\0';
 	strcat(buffer, "{\"M\":[");   // old ItemsMap tag
 
-	for (int k = 0; k<OPCItemsCount; k++) {
+	for (int k = 0; k < OPCItemsCount; k++) {
 		if (k) strcat(buffer, ",");
 
 		strcat(buffer, "{\"I\":\""); // old ItemId tag
@@ -362,7 +362,7 @@ void OPCEthernet::sendOPCItemsMap()
 	buffer[0] = '\0';
 	strcat(buffer, "{\"M\":[");  // Old ItemsMap
 
-	for (int k = 0; k<OPCItemsCount; k++) {
+	for (int k = 0; k < OPCItemsCount; k++) {
 		if (k) strcat(buffer, ",");
 
 		strcat(buffer, "{\"I\":\""); // old ItemId tag
@@ -528,7 +528,7 @@ void OPCNodeMcu::after_setup(uint8_t listen_port)
 
 	server = new WiFiServer(listen_port);
 	Serial.println("Listen port:");
-	Serial.println("listen_port");
+	Serial.println(listen_port);
 	server->begin();
 }
 
@@ -537,7 +537,7 @@ void OPCNodeMcu::sendOPCItemsMap()
 	buffer[0] = '\0';
 	strcat(buffer, "{\"M\":[");  // Old ItemsMap
 
-	for (int k = 0; k<OPCItemsCount; k++) {
+	for (int k = 0; k < OPCItemsCount; k++) {
 		if (k) strcat(buffer, ",");
 
 		strcat(buffer, "{\"I\":\""); // old ItemId tag
@@ -567,29 +567,38 @@ void OPCNodeMcu::sendOPCItemsMap()
 
 void OPCNodeMcu::processClientCommand()
 {
-	char *p, *j;
+	char *key, *param;
 	bool matched = false;
 	bool(*bool_callback)(const char *itemID, const opcOperation opcOP, const bool value);
 	byte(*byte_callback)(const char *itemID, const opcOperation opcOP, const byte value);
 	int(*int_callback)(const char *itemID, const opcOperation opcOP, const int value);
 	float(*float_callback)(const char *itemID, const opcOperation opcOP, const float value);
-
+	Serial.println("1");
 	client.println(F("HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nConnection: close\r\n"));
+	Serial.println("2");
+
 
 	if (!strcmp(buffer, "itemsmap")) {
 		sendOPCItemsMap();
+		Serial.println("3");
 	}
 	else
 	{
-		p = strtok_r(buffer, "=", &j);
-		if (!j[0]) {
+		Serial.println("4");
+		key = strtok_r(buffer, "=", &param);
+		Serial.println("44");
+		Serial.println("!j[0]");
+			Serial.println(param);
+		if (param[0] != '\0') {
+			Serial.println("444");
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
 					// Execute the stored handler function for the command  
+					Serial.println("5");
 					client.print(F("{\"I\":\"")); // old ItemId tag
 					client.print(buffer);
 					client.print(F("\",\"V\":\"")); // old ItemValue tag
-
+					Serial.println("6");
 					switch (OPCItemList[i].itemType) {
 					case opc_bool:
 						bool_callback = (bool(*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
@@ -610,7 +619,7 @@ void OPCNodeMcu::processClientCommand()
 					} /* end switch */
 
 					client.print(F("\"}"));
-
+					Serial.println("7");
 					matched = true;
 					break;
 				} /* end if */
@@ -618,32 +627,36 @@ void OPCNodeMcu::processClientCommand()
 		} /* end if */
 		else
 		{
+			Serial.println("8");
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
 
-					// Call the stored handler function for the command                          
+					// Call the stored handler function for the command       
+					Serial.println("666");
 					switch (OPCItemList[i].itemType) {
 					case opc_bool:
 						bool_callback = (bool(*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
-						bool_callback(OPCItemList[i].itemID, opc_opwrite, atoi(j));
+						bool_callback(OPCItemList[i].itemID, opc_opwrite, atoi(param));
 						break;
 					case opc_byte:
 						byte_callback = (byte(*)(const char *itemID, const opcOperation opcOP, const byte value))(OPCItemList[i].ptr_callback);
-						byte_callback(OPCItemList[i].itemID, opc_opwrite, atoi(j));
+						byte_callback(OPCItemList[i].itemID, opc_opwrite, atoi(param));
 						break;
 					case opc_int:
 						int_callback = (int(*)(const char *itemID, const opcOperation opcOP, const int value))(OPCItemList[i].ptr_callback);
-						int_callback(OPCItemList[i].itemID, opc_opwrite, atoi(j));
+						int_callback(OPCItemList[i].itemID, opc_opwrite, atoi(param));
 						break;
 					case opc_float:
 						float_callback = (float(*)(const char *itemID, const opcOperation opcOP, const float))(OPCItemList[i].ptr_callback);
-						float_callback(OPCItemList[i].itemID, opc_opwrite, atof(j));
+						float_callback(OPCItemList[i].itemID, opc_opwrite, atoi(param));
 						break;
 					} /* end case */
 
 					matched = true;
 					break;
+
 				} /* end if */
+				Serial.println("88");
 			} /* end for */
 		} /* end else */
 	} /* end else */
@@ -685,7 +698,7 @@ void OPCNodeMcu::setup(char* ssid, char* password, uint8_t listen_port)
 void OPCNodeMcu::setup(char* ssid, char* password, uint8_t listen_port, IPAddress local_ip)
 {
 OPCNodeMcu::WiFiConnect(ssid, password);
-// WiFi.Config(..) WiFI Station lib for Esp8266.
+ WiFi.Config(..) WiFI Station lib for Esp8266.
 after_setup(listen_port);
 }
 */
@@ -705,6 +718,7 @@ void OPCNodeMcu::processOPCCommands()
 				char c = client.read();
 
 				if (c == '\n' && currentLineIsBlank) {
+					Serial.println("NodeMcu:processClientCommand");
 					processClientCommand();
 					responsed = true;
 				}
@@ -730,7 +744,7 @@ void OPCNodeMcu::processOPCCommands()
 				}
 			}
 		}
-		delay(1); // Espera para dar tiempo al navegador a recibir los datos.
+		delay(5); // Espera para dar tiempo al navegador a recibir los datos.
 		client.stop(); // Cierra la conexión.
 	}
 }

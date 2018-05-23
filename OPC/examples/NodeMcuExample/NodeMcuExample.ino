@@ -82,7 +82,8 @@ void setup() {
 	for (k = 0; k<11; k++) digital_status_input[k] = opc_undefined;
 	for (k = 0; k<1; k++) analog_status_input[k] = opc_undefined;
 
-	myNodeMcu.setup("NETGEAR98", "luckyshoe351", 80);
+	//myNodeMcu.setup("NETGEAR98", "luckyshoe351", 80);
+	myNodeMcu.setup("Internet_57", "123456789", 80);
 	myNodeMcu.addItem("D0", opc_readwrite, opc_bool, readwrite_digital);
 	myNodeMcu.addItem("D1", opc_readwrite, opc_bool, readwrite_digital);
 	myNodeMcu.addItem("D2", opc_readwrite, opc_bool, readwrite_digital);

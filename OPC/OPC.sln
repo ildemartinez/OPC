@@ -3,36 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F98975A-22D0-4378-BCC8-E715ADA5C920}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{069C078D-CB2D-4ACB-AB48-3864608F3ED0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OPC", "OPC\OPC.vcxproj", "{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NodeMcuExample", "NodeMcuExample", "{7EB29244-13CD-405D-B731-D32CEF5B8ED0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NodeMcuExample", "NodeMcuExample\NodeMcuExample.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NodeMcuExample", "examples\NodeMcuExample\NodeMcuExample.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C14D589E-6439-4781-8F92-67422C1876DF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OPC", "src\OPC\OPC.vcxitems", "{8477C62D-D1EA-4284-B9AD-0E0DEE80DBD1}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\OPC\OPC.vcxitems*{8477c62d-d1ea-4284-b9ad-0e0dee80dbd1}*SharedItemsImports = 9
+		src\OPC\OPC.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Debug|x64.ActiveCfg = Debug|x64
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Debug|x64.Build.0 = Debug|x64
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Debug|x86.ActiveCfg = Debug|Win32
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Debug|x86.Build.0 = Debug|Win32
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Release|x64.ActiveCfg = Release|x64
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Release|x64.Build.0 = Release|x64
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Release|x86.ActiveCfg = Release|Win32
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98}.Release|x86.Build.0 = Release|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x64.ActiveCfg = Debug|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x64.ActiveCfg = Release|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
@@ -40,9 +32,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A93310AB-C0BC-44D8-B24B-B8EE52DD4B98} = {2F98975A-22D0-4378-BCC8-E715ADA5C920}
 		{7EB29244-13CD-405D-B731-D32CEF5B8ED0} = {069C078D-CB2D-4ACB-AB48-3864608F3ED0}
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88} = {7EB29244-13CD-405D-B731-D32CEF5B8ED0}
+		{8477C62D-D1EA-4284-B9AD-0E0DEE80DBD1} = {C14D589E-6439-4781-8F92-67422C1876DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86C282EA-ACF9-4768-B430-72D2A0AB37AB}
