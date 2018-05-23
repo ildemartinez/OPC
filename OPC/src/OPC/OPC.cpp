@@ -515,7 +515,7 @@ void OPCEthernet::processOPCCommands()
 			}
 		}
 		delay(1); // Espera para dar tiempo al navegador a recibir los datos.
-		client.stop(); // Cierra la conexión.
+		client.stop(); // Cierra la conexiÃ³n.
 	}
 }
 
@@ -573,10 +573,7 @@ void OPCNodeMcu::processClientCommand()
 	byte(*byte_callback)(const char *itemID, const opcOperation opcOP, const byte value);
 	int(*int_callback)(const char *itemID, const opcOperation opcOP, const int value);
 	float(*float_callback)(const char *itemID, const opcOperation opcOP, const float value);
-	Serial.println("1");
 	client.println(F("HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nConnection: close\r\n"));
-	Serial.println("2");
-
 
 	if (!strcmp(buffer, "itemsmap")) {
 		sendOPCItemsMap();
@@ -591,7 +588,6 @@ void OPCNodeMcu::processClientCommand()
 		Serial.println("Param:");
 		Serial.println(param);
 		
-	//if (param[0] == '\0' || param == NULL) {
 		if ((param == NULL) || param == 0) {
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
@@ -666,7 +662,7 @@ void OPCNodeMcu::WiFiConnect(char * ssid, char * password)
 	while (WiFiMulti.run() != WL_CONNECTED) {
 		for (int i = 1; i <= 7; i++)
 		{
-			digitalWrite(2, i % 2); // Light when 0.
+			digitalWrite(4, i % 2); // Light when 0.
 			delay(80);
 		}
 		Serial.print(".");
@@ -740,7 +736,7 @@ void OPCNodeMcu::processOPCCommands()
 				}
 			}
 		}
-		delay(5); // Espera para dar tiempo al navegador a recibir los datos.
-		client.stop(); // Cierra la conexión.
+		delay(5); // Wait to give the browser time to receive the data..
+		client.stop(); // Close the connection
 	}
 }
