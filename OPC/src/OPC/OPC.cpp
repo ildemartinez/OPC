@@ -580,11 +580,9 @@ void OPCNodeMcu::processClientCommand()
 
 	if (!strcmp(buffer, "itemsmap")) {
 		sendOPCItemsMap();
-		Serial.println("3");
 	}
 	else
 	{
-		Serial.println("4");
 		Serial.println("Buffer:");
 		Serial.println(buffer);
 		key = strtok_r(buffer, "=", &param);
@@ -592,19 +590,15 @@ void OPCNodeMcu::processClientCommand()
 		Serial.println(key);
 		Serial.println("Param:");
 		Serial.println(param);
-		Serial.println("44");
 		
 	//if (param[0] == '\0' || param == NULL) {
 		if ((param == NULL) || param == 0) {
-			Serial.println("444");
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
 					// Execute the stored handler function for the command  
-					Serial.println("5");
 					client.print(F("{\"I\":\"")); // old ItemId tag
 					client.print(buffer);
 					client.print(F("\",\"V\":\"")); // old ItemValue tag
-					Serial.println("6");
 					switch (OPCItemList[i].itemType) {
 					case opc_bool:
 						bool_callback = (bool(*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
@@ -625,7 +619,6 @@ void OPCNodeMcu::processClientCommand()
 					} /* end switch */
 
 					client.print(F("\"}"));
-					Serial.println("7");
 					matched = true;
 					break;
 				} /* end if */
@@ -633,12 +626,10 @@ void OPCNodeMcu::processClientCommand()
 		} /* end if */
 		else
 		{
-			Serial.println("8");
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
 
 					// Call the stored handler function for the command       
-					Serial.println("666");
 					switch (OPCItemList[i].itemType) {
 					case opc_bool:
 						bool_callback = (bool(*)(const char *itemID, const opcOperation opcOP, const bool value))(OPCItemList[i].ptr_callback);
@@ -662,10 +653,8 @@ void OPCNodeMcu::processClientCommand()
 					break;
 
 				} /* end if */
-				Serial.println("88");
 			} /* end for */
 		} /* end else */
-		Serial.println("888");
 	} /* end else */
 }
 
