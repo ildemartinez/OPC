@@ -585,11 +585,17 @@ void OPCNodeMcu::processClientCommand()
 	else
 	{
 		Serial.println("4");
+		Serial.println("Buffer:");
+		Serial.println(buffer);
 		key = strtok_r(buffer, "=", &param);
+		Serial.println("Key:");
+		Serial.println(key);
+		Serial.println("Param:");
+		Serial.println(param);
 		Serial.println("44");
-		Serial.println("!j[0]");
-			Serial.println(param);
-		if (param[0] != '\0') {
+		
+	//if (param[0] == '\0' || param == NULL) {
+		if ((param == NULL) || param == 0) {
 			Serial.println("444");
 			for (int i = 0; i < OPCItemsCount; i++) {
 				if (!strcmp(buffer, OPCItemList[i].itemID)) {
@@ -659,6 +665,7 @@ void OPCNodeMcu::processClientCommand()
 				Serial.println("88");
 			} /* end for */
 		} /* end else */
+		Serial.println("888");
 	} /* end else */
 }
 
